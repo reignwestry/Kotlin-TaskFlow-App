@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -117,7 +118,7 @@ fun TaskFlowDashboardScreen() {
             contentColor = Color.White
         ) {
             Icon( //REPLACE with Material3 Icon
-                imageVector = Icons.Default.Add,
+                painter = painterResource(R.drawable.app_registration), //Custom Material3 Icon
                 contentDescription = "Create Fresh Task Record Entry"
             )
         }
