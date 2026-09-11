@@ -114,11 +114,12 @@ fun TaskFlowDashboardScreen() {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
+
             containerColor = Color(0xFF2563EB), //Rich action Blue identifier
             contentColor = Color.White
         ) {
             Icon( //REPLACE with Material3 Icon
-                painter = painterResource(R.drawable.app_registration), //Custom Material3 Icon
+                painter = painterResource(R.drawable.app_registration), //converted original to Custom Material3 Icon
                 contentDescription = "Create Fresh Task Record Entry"
             )
         }
