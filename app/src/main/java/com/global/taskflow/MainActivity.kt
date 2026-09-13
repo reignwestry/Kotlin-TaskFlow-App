@@ -1,9 +1,11 @@
 package com.global.taskflow
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,7 +27,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -58,10 +63,12 @@ class MainActivity:ComponentActivity(){
 
 @Composable
 fun TaskFlowDashboardScreen() {
+    val currentContext = LocalContext.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF9FAFB)) // Clean, modern off-white background canvas
+            .background(Color(0xFFF9FAFB))
     ) {
         Column(
             modifier = Modifier
@@ -94,14 +101,20 @@ fun TaskFlowDashboardScreen() {
             //Appending our new custom parameterized layout row car components
             TaskDisplayCard(
                 taskTitle = "Review Application Code Architecture",
-                taskCategory = "Engineering"
+                taskCategory = "Engineering",
+                onCardClick ={
+                    Toast.makeText(currentContext, "Clicked: Code Architecture", Toast.LENGTH_SHORT).show()
+                }
             )
 
             Spacer(modifier = Modifier.height(10.dp))
 
             TaskDisplayCard(
                 taskTitle = "Configure Room Database Local Cache",
-                taskCategory = "Database Storage"
+                taskCategory = "Database Storage",
+                onCardClick ={
+                    Toast.makeText(currentContext, "Clicked: Room Database Setup", Toast.LENGTH_SHORT).show()
+                }
             )
 
 
@@ -110,7 +123,9 @@ fun TaskFlowDashboardScreen() {
 
         //Floating Action Button layered on top of the list via Box alignment properties
         FloatingActionButton(
-            onClick = {/* Interactive navigation handling to be attached in later modules */ },
+            onClick = {
+                Toast.makeText(currentContext, "Launch Task Creation Input Screen", Toast.LENGTH_SHORT).show()
+                      },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
@@ -126,10 +141,7 @@ fun TaskFlowDashboardScreen() {
     }
 }
 /**
- * A highly reuseable Composable component that transforms raw task metrics into a visual header card.
- *
- * @param totalTasks The total count of recorded obligations currently managed by the app layer.
- * @param pendingTasks The count of unfinished tasks requiring immediate user attention.
+ * Functional status header utilizing standard width and background shape modifiers.
  */
 
 @Composable
@@ -172,12 +184,20 @@ fun TaskSummaryHeader(totalTasks: Int, pendingTasks: Int, modifier:Modifier = Mo
 }
 
 /**
- * TaskDisplayCard structures individual task listings using a Row and Column layout to position titles and categories cleanly.
+ * TaskDisplayCard leverages precise modifier ordering to inject interactive ripple states and prevent background color leakage outside rounded container borders.
  */
 @Composable
-fun TaskDisplayCard(taskTitle: String, taskCategory: String, modifier: Modifier = Modifier){
+fun TaskDisplayCard(
+    taskTitle: String,
+    taskCategory: String,
+    onCardClick:()-> Unit,
+    modifier: Modifier = Modifier
+){
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp)) // 1. Clip bounding box parameters first
+            .clickable {onCardClick()}, //2. Attach click interaction layer next
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -196,7 +216,6 @@ fun TaskDisplayCard(taskTitle: String, taskCategory: String, modifier: Modifier 
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            //Aligning categorization items horizontally inside the card space
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ){
@@ -215,3 +234,10 @@ fun TaskDisplayCard(taskTitle: String, taskCategory: String, modifier: Modifier 
         }
     }
 }
+
+/**
+ * System extension configuration to guarantee local system platform context binding compatibility flags
+ */
+
+//@Composable
+//fun LocalContext.getOriginalContext() = this.current
