@@ -80,6 +80,7 @@ fun TaskFlowTheme(
     //Dynamically branching the active system color architecture based on system properties
     val targetColorScheme = if(darkTheme) TaskFlowDarkColors else TaskFlowLightColors
 
+
     MaterialTheme(
         colorScheme = targetColorScheme,
         content = content
