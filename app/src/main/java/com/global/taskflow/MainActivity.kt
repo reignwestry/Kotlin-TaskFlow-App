@@ -127,3 +127,50 @@ fun InteractiveTaskCard(title: String, category: String) {
         }
     }
 }
+
+/**
+ * An upgraded, interactive task card that utilizes mutableStateOf and remember
+ * to manage local visual priority states cleanly.
+ */
+@Composable
+fun TaskDisplayCard(title: String, category: String, modifier: Modifier = Modifier) {
+    //1.Establish our state wrappers using the property delegate syntax
+    var isHighPriority by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        colors = CardDefaults.cardColors(
+            //The container background color updates dynamically based on the priority state
+            containerColor = if (isHighPriority) Color(0xFFFEF2F2) else Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = title, fontSize = 16.sp, color = Color(0xFF111827))
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = category, fontSize = 12.sp, color = Color(0xFF6B7280))
+            }
+
+            //2. Interactive Text Button that acts as our state transformation trigger
+            Text(
+                text = if (isHighPriority) "\u2606 High" else "\u2605 NORMAL",
+                fontSize = 12.sp,
+                color = if (isHighPriority) Color(0xFFDC2626) else Color(0xFF4B5563),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(if (isHighPriority) Color(0xFFFEE2E2) else Color(0xFFF3F4F6))
+                    .clickable { isHighPriority = !isHighPriority } //Toggling our state variable
+                    .padding(horizontal = 8.dp, vertical = 6.dp)
+            )
+        }
+    }
+}
