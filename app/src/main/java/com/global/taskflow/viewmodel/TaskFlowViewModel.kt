@@ -1,33 +1,28 @@
 package com.global.taskflow.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.global.taskflow.data.model.TaskItem
+import kotlinx.coroutines.flow.*
 
 /**
- * TaskFlowViewModel serves as the centralized command center for our application logic. It manages
- * state transformations and retains data safely across layout alterations.
+ * An upgraded version of TaskFlowViewMode3l leveraging Kotlin StateFlow streams to coordinate
+ * reactive task data states across our presentation screens cleanly.
  */
 class TaskFlowViewModel : ViewModel() {
 
-  // Internal mutable collection tracking our active task data records in memory
-  private val _tasks = mutableStateListOf<TaskItem>()
+  // 1. Internal mutable stream container initialized with an empty task collection wrapper
+  private val _tasksState = MutableStateFlow<List<TaskItem>>(emptyList())
 
-  // Exposing a read-only list reference to prevent outside layout files from mutating our state
-  // directly
-  val tasks: List<TaskItem>
-    get() = _tasks
+  // 2. Public read-only StateFlow exposed cleanly to our user interface listeners
+  val tasksState: StateFlow<List<TaskItem>> = _tasksState.asStateFlow()
 
   /**
-   * Accepts raw input text arguments, validates parameters, and appends a fresh task object to our
-   * state list.
+   * Validates input parameters and atomically updates the underlying state flow stream.
    *
-   * @param title The primary text description text entered by the user.
-   * @param category The classification category label assigned to the item record.
+   * @param title The description text captured from our user input text fields.
+   * @param category The sorting category tag assigned by the user.
    */
   fun addTask(title: String, category: String) {
-    // Enforcing core business validation rules to prevent empty entries
-
     if (title.isBlank()) return
 
     val freshTask =
@@ -35,6 +30,10 @@ class TaskFlowViewModel : ViewModel() {
             title = title.trim(),
             category = category,
         )
-    _tasks.add(freshTask)
+
+    // 3. Atomically overwrite the stream state wrapper with a clean immutable list addition
+    _tasksState.update { currentTasksList ->
+      currentTasksList + freshTask
+    }
   }
 }
