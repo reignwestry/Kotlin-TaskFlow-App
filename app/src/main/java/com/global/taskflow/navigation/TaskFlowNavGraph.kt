@@ -19,7 +19,10 @@ import com.global.taskflow.viewmodel.TaskFlowViewModel
 fun TaskFlowNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    taskViewModel: TaskFlowViewModel = viewModel(), // Instantiating our centralized state engine
+    taskViewModel: TaskFlowViewModel =
+        viewModel(
+            factory = TaskFlowViewModel.Factory
+        ), // Instantiating our centralized state engine
 ) {
   // Collect state safely while automatically respecting the active screen lifecycle
   val tasksListState by taskViewModel.tasksState.collectAsStateWithLifecycle()
@@ -52,6 +55,16 @@ fun TaskFlowNavGraph(
             navController.popBackStack()
           },
       )
+    }
+
+    composable(route = Screen.Dashboard.routePath) {
+      DashboardScreen(
+          tasks = tasksListState,
+          onNavigateToInput = { navController.navigate(Screen.TaskInput.routePath) },,
+      ) { selectedTask ->
+          // Routing UI interaction events straight into our background logic engine
+          taskViewModel.toggleTaskCompletion(selectedTask)
+      }
     }
   }
 }

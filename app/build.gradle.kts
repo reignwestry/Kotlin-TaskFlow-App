@@ -48,6 +48,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.navigation.compose)
   implementation(libs.androidx.navigation.runtime.ktx)
+  implementation(libs.androidx.ui)
   testImplementation(libs.junit)
   androidTestImplementation(platform(libs.androidx.compose.bom))
   androidTestImplementation(libs.androidx.compose.ui.test.junit4)
@@ -57,9 +58,9 @@ dependencies {
   debugImplementation(libs.androidx.compose.ui.tooling)
 
   // 2. Room Relational Database Runtime Toolkit Dependencies
-  implementation("androidx.room:room-runtime:2.6.1")
-  implementation("androidx.room:room-ktx:2.6.1")
+  implementation("androidx.room:room-runtime:2.7.0")
+  implementation("androidx.room:room-ktx:2.7.0")
 
   // 3. Link Room to the KSP Compilation Code Generator Pipeline
-  ksp("androidx.room:room-compiler:2.6.1")
+  ksp("androidx.room:room-compiler:2.7.0")
 }
