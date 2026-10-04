@@ -29,6 +29,7 @@ fun DashboardScreen(
     tasks: List<TaskItem>,
     onNavigateToInput: () -> Unit,
     modifier: Modifier = Modifier,
+    onToggleTask: (TaskItem) -> Unit,
 ) {
   Box(modifier = modifier.fillMaxSize().background(Color(0xFFF9FAFB))) {
     Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
@@ -55,30 +56,19 @@ fun DashboardScreen(
       } else {
         // High-performance scrolling loop container that efficiently draws cards
         LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp),
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-          items(tasks) { task ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-            ) {
-              Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = task.title,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = task.category,
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                )
-              }
-            }
+          items(
+              items = tasks,
+              key = { taskItem -> taskItem.id },
+          ) { task ->
+            // Calling our newly extracted reusable component layout cleanly
+            com.global.taskflow.ui.components.TaskRow(
+                task = task,
+                onRowClick = { onToggleTask(task) },
+            )
           }
         }
       }

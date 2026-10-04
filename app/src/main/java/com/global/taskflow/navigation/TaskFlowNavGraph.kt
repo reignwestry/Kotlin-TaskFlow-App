@@ -32,18 +32,19 @@ fun TaskFlowNavGraph(
     // Destination Node 1: The Primary Task Dashboard Screen View
     composable(route = Screen.Dashboard.routePath) {
       DashboardScreen(
-          tasks = tasksListState, // Passing the live data array down to the layout
-          onNavigateToInput = {
-            // Controller pushes the input destination onto the active backstack
-            navController.navigate(Screen.TaskInput.routePath)
-          },
-      )
+          tasks = tasksListState,
+          onNavigateToInput = { navController.navigate(Screen.TaskInput.routePath) },
+      ) // Passing the live data array down to the layout
+      {
+        // Controller pushes the input destination onto the active backstack
+        navController.navigate(Screen.TaskInput.routePath)
+      }
     }
     // Destination Node 2: The Task Creation Form Entry Screen View
     composable(route = Screen.TaskInput.routePath) {
       InputScreen(
           onSaveTask = { verifiedTitle ->
-            // Dispatching user text input events traight to our business logic
+            // Dispatching user text input events straight to our business logic
             taskViewModel.addTask(title = verifiedTitle, category = "Engineering")
             navController.popBackStack()
           },
